@@ -2,15 +2,21 @@
 
 A utility tool that analyzes your Next.js application routes and provides detailed information about them.
 
+## Demo
+
+![Router analysis demo](assets/demo1.png)
+
 ## Overview
 
-The Router Analyzer scans your Next.js app directory structure and extracts information about all API routes, including:
+- `get-routers-info`
 
-- API paths
-- HTTP methods (GET, POST, PUT, DELETE, etc.)
-- Request parameters
-- Status codes
-- Request and response schemas
+  The Router Analyzer scans your Next.js app directory structure and extracts information about all API routes, including:
+
+  - API paths
+  - HTTP methods (GET, POST, PUT, DELETE, etc.)
+  - Request parameters
+  - Status codes
+  - Request and response schemas
 
 This is particularly useful for documentation, testing, or integrating with API management tools.
 
