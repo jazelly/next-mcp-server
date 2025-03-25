@@ -2,19 +2,41 @@
     "compilerOptions": {
       "outDir": "./dist",
       "rootDir": ".",
-      "target": "ES2022",
-      "module": "Node16",
-      "moduleResolution": "Node16",
-      "strict": false,
+      "target": "es2020",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "allowJs": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
-      "resolveJsonModule": true
-
+      "isolatedModules": true,
+      "baseUrl": ".",
+      "noImplicitAny": false,
+      "strictNullChecks": false,
+      "strictFunctionTypes": false,
+      "strictBindCallApply": false,
+      "strictPropertyInitialization": false,
+      "noImplicitThis": false,
+      "useUnknownInCatchVariables": false,
+      "alwaysStrict": false,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "exactOptionalPropertyTypes": false,
+      "noImplicitReturns": false,
+      "noFallthroughCasesInSwitch": false,
+      "noUncheckedIndexedAccess": false,
+      "noImplicitOverride": false,
+      "noPropertyAccessFromIndexSignature": false
     },
     "include": [
-      "./**/*.ts"
+      "./**/*.ts",
+      "./**/*.js"
     ],
-    "exclude": ["node_modules"]
+    "exclude": [
+      "node_modules",
+      "dist",
+      "dist/operations/router.js"
+    ]
   }
   

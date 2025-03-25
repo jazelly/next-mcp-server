@@ -9,6 +9,10 @@ const readFile = promisify(fs.readFile);
 // Define Zod schemas for route information
 export const HttpMethodSchema = z.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS']);
 
+export const GetRoutersInfoSchema = z.object({
+  projectDir: z.string().describe('The directory of the Next.js project. Must be absolute path.')
+});
+
 export const RouteParameterSchema = z.object({
   name: z.string(),
   type: z.string(),
@@ -61,7 +65,7 @@ async function analyzeNextRoutes(typesDir: string): Promise<Array<z.infer<typeof
       
       // Read the actual implementation file
       const implFilePath = path.resolve(implementationPath);
-      let implementationContent;
+      let implementationContent: string | null = null;
       
       try {
         implementationContent = await readFile(implFilePath, 'utf8');
@@ -394,12 +398,60 @@ function getStatusCodeDescription(code: number): string {
   return statusCodes[code] || 'Unknown status code';
 }
 
+
+/**
+ * Decodes a URL-encoded path for use with Node.js file system operations
+ * @param {string} urlPath - The URL-encoded path (e.g., '/e%3A/github/my/FinetuneLLMs/core')
+ * @returns {string} - A path usable with Node.js fs operations
+ */
+function decodeUrlPath(urlPath: string): string {
+  try {
+    // Simply decode any URL-encoded characters
+    const decodedPath = decodeURIComponent(urlPath);
+    
+    // Remove leading slash if on Windows and path starts with drive letter
+    // This handles paths like /E:/github/... -> E:/github/...
+    if (process.platform === 'win32' && decodedPath.match(/^\/[a-zA-Z]:/)) {
+      return decodedPath.substring(1);
+    }
+    
+    return decodedPath;
+  } catch (error) {
+    console.error('Error decoding path:', error);
+    return urlPath; // Return original if decoding fails
+  }
+}
+
+function resolveTypesDir(projectDir: string) {
+  if (projectDir.includes('%')) {
+    projectDir = decodeUrlPath(projectDir);
+  }
+  console.log('Resolving types directory...\n', projectDir);
+  const possibleCombinations = [
+    path.resolve(projectDir, '.next', 'types'),
+    path.resolve(projectDir, 'types'),
+    path.resolve(projectDir, '..', 'types'),
+  ];
+
+  for (const possibleCombination of possibleCombinations) {
+    if (fs.existsSync(possibleCombination)) {
+      console.log(`Found types directory: ${possibleCombination}`);
+      return possibleCombination;
+    }
+  }
+
+  return null;
+}
+
 /**
  * Run the analyzer and print the results
  */
-export async function getRoutersInfo() {
+export async function getRoutersInfo(projectDir: string) {
   try {
-    const typesDir = path.resolve(process.cwd(), '.next', 'types');
+    const typesDir = resolveTypesDir(projectDir);
+    if (!typesDir) {
+      throw new Error(`Types directory not found under ${projectDir}`);
+    }
     const routesInfo = await analyzeNextRoutes(typesDir);
     
     console.log('API Routes Analysis:');
