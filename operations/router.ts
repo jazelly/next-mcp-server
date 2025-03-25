@@ -49,8 +49,8 @@ export const RouteInfoSchema = z.object({
  * Main function to analyze Next.js routes
  * @returns {Promise<Array<z.infer<typeof RouteInfoSchema>>>} - Array of route information
  */
-async function analyzeNextRoutes(typesDir: string): Promise<Array<z.infer<typeof RouteInfoSchema>>> {
-  const routeFiles = await findRouteFiles(typesDir);
+async function analyzeNextRoutes(projectDir: string): Promise<Array<z.infer<typeof RouteInfoSchema>>> {
+  const routeFiles = await findRouteFiles(projectDir);
   const routesInfo = [];
 
   for (const filePath of routeFiles) {
@@ -98,15 +98,16 @@ async function analyzeNextRoutes(typesDir: string): Promise<Array<z.infer<typeof
   return routesInfo;
 }
 
+
 /**
- * Find all route.ts files in the .next/types directory
- * @param {string} dir - Directory to search
+ * Find all route.ts/js files directly in the project directory
+ * @param {string} dir - Project directory to search
  * @returns {Promise<Array<string>>} - Array of file paths
  */
 async function findRouteFiles(dir: string): Promise<Array<string>> {
   const routeFiles: string[] = [];
   
-  async function searchDir(currentDir) {
+  async function searchDir(currentDir: string) {
     try {
       const entries = await readdir(currentDir, { withFileTypes: true });
       
@@ -114,9 +115,17 @@ async function findRouteFiles(dir: string): Promise<Array<string>> {
         const fullPath = path.join(currentDir, entry.name);
         
         if (entry.isDirectory()) {
+          // Skip node_modules, .git, .next, and other common directories to avoid excessive scanning
+          if (['node_modules', '.git', '.next', 'dist', 'build', 'out'].includes(entry.name)) {
+            continue;
+          }
           await searchDir(fullPath);
-        } else if (entry.name === 'route.ts') {
-          routeFiles.push(fullPath);
+        } else if (entry.name === 'route.ts' || entry.name === 'route.js' || 
+                  entry.name === 'route.tsx' || entry.name === 'route.jsx') {
+          // Only include routes inside the app directory
+          if (fullPath.includes(`${path.sep}app${path.sep}`)) {
+            routeFiles.push(fullPath);
+          }
         }
       }
     } catch (error) {
@@ -398,61 +407,12 @@ function getStatusCodeDescription(code: number): string {
   return statusCodes[code] || 'Unknown status code';
 }
 
-
-/**
- * Decodes a URL-encoded path for use with Node.js file system operations
- * @param {string} urlPath - The URL-encoded path (e.g., '/e%3A/github/my/FinetuneLLMs/core')
- * @returns {string} - A path usable with Node.js fs operations
- */
-function decodeUrlPath(urlPath: string): string {
-  try {
-    // Simply decode any URL-encoded characters
-    const decodedPath = decodeURIComponent(urlPath);
-    
-    // Remove leading slash if on Windows and path starts with drive letter
-    // This handles paths like /E:/github/... -> E:/github/...
-    if (process.platform === 'win32' && decodedPath.match(/^\/[a-zA-Z]:/)) {
-      return decodedPath.substring(1);
-    }
-    
-    return decodedPath;
-  } catch (error) {
-    console.error('Error decoding path:', error);
-    return urlPath; // Return original if decoding fails
-  }
-}
-
-function resolveTypesDir(projectDir: string) {
-  if (projectDir.includes('%')) {
-    projectDir = decodeUrlPath(projectDir);
-  }
-  console.log('Resolving types directory...\n', projectDir);
-  const possibleCombinations = [
-    path.resolve(projectDir, '.next', 'types'),
-    path.resolve(projectDir, 'types'),
-    path.resolve(projectDir, '..', 'types'),
-  ];
-
-  for (const possibleCombination of possibleCombinations) {
-    if (fs.existsSync(possibleCombination)) {
-      console.log(`Found types directory: ${possibleCombination}`);
-      return possibleCombination;
-    }
-  }
-
-  return null;
-}
-
 /**
  * Run the analyzer and print the results
  */
 export async function getRoutersInfo(projectDir: string) {
   try {
-    const typesDir = resolveTypesDir(projectDir);
-    if (!typesDir) {
-      throw new Error(`Types directory not found under ${projectDir}`);
-    }
-    const routesInfo = await analyzeNextRoutes(typesDir);
+    const routesInfo = await analyzeNextRoutes(projectDir);
     
     console.log('API Routes Analysis:');
     console.log(JSON.stringify(routesInfo, null, 2));
