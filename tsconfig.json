@@ -36,7 +36,8 @@
     "exclude": [
       "node_modules",
       "dist",
-      "dist/operations/router.js"
+      "dist/operations/router.js",
+      "playground"
     ]
   }
   
