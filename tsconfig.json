@@ -31,7 +31,8 @@
     },
     "include": [
       "./**/*.ts",
-      "./**/*.js"
+      "./**/*.js",
+      "**/*.test.ts"
     ],
     "exclude": [
       "node_modules",

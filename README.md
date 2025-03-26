@@ -1,12 +1,10 @@
-# Next.js MCP Server 
-
-A utility tool that analyzes your Next.js application routes and provides detailed information about them.
+# Next.js MCP Server
 
 ## Demo
 
 ![Router analysis demo](assets/demo1.png)
 
-## Overview
+## Features
 
 - `get-routers-info`
 
@@ -17,8 +15,6 @@ A utility tool that analyzes your Next.js application routes and provides detail
   - Request parameters
   - Status codes
   - Request and response schemas
-
-This is particularly useful for documentation, testing, or integrating with API management tools.
 
 ## Installation
 
@@ -49,6 +45,21 @@ node dist/index.js
 docker build -t mcp/next -f Dockerfile .
 docker run mcp/next -d
 ```
+
+For cursor usage, define a `mcp.json` under `~/.cursor` or `[projectDir]/.cursor`
+
+```
+{
+  "mcpServers": {
+    "next.js": {
+      "url": "http://localhost:4857/sse"
+    }
+  }
+}
+```
+
+The `url` here could vary based on your .env settings within the project.
+
 
 ## Output
 
@@ -91,6 +102,19 @@ To run tests:
 node run-router-test.js
 ```
 
+To run the mcp server:
+
+```bash
+npm run build
+node dist/index.js 
+```
+
+To run the playground:
+
+```bash
+pnpm --filter playground dev
+```
+
 ## How It Works
 
 The tool:
@@ -99,6 +123,11 @@ The tool:
 2. Analyzes each route file to extract HTTP methods, paths, parameters, etc.
 3. Extracts documentation from comments
 4. Returns a structured representation of all your API routes
+
+## Restrictions
+
+1. Due to the nature of accessing filesystem directory by path, it will not work if hosted over network
+2. Only supports Next.js App router projects
 
 ## License
 

@@ -1,6 +1,6 @@
 import path from 'path';
 import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
-import { getRoutersInfo } from './router.js';
+import { getRoutersInfo } from '../router.js';
 
 describe('NextJS Router Analysis', () => {
   // Capture console logs for verification
