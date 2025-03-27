@@ -1,6 +1,6 @@
 {
   "name": "next-mcp-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Help LLMs to understand your Next.js project better",
   "main": "dist/index.js",
   "author": "jazelly (xzha4350@gmail.com)",
