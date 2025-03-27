@@ -1,2 +1,4 @@
 dist/**/*.test.js
 dist/jest.config.js
+**/**.test.js
+dist/**.test.js
