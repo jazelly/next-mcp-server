@@ -26,7 +26,6 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
     "express": "^5.0.1",
-    "next-mcp-server": "^0.1.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.23.5"
   },
