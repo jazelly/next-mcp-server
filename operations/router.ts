@@ -402,7 +402,9 @@ function getStatusCodeDescription(code: number): string {
  */
 export async function getRoutersInfo(projectDir: string) {
   try {
-    const routesInfo = await analyzeNextRoutes(projectDir);
+    // remove leading slashes or backslashes
+    const cleanedProjectPath = projectDir.replace(/^[\/\\]+/, '');
+    const routesInfo = await analyzeNextRoutes(cleanedProjectPath);
 
     console.log('API Routes Analysis:');
     console.log(JSON.stringify(routesInfo, null, 2));

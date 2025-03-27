@@ -7,6 +7,26 @@ describe('NextJS Router Analysis', () => {
   let consoleLogSpy;
   let consoleErrorSpy;
   let consoleWarnSpy;
+  
+  const playgroundPath = path.resolve(process.cwd(), 'playground');
+  const unixPath = path.resolve(process.cwd(), 'playground').replace(/\\/g, '/')
+  const windowsPath = path.resolve(process.cwd(), 'playground').replace(/\//g, '\\')
+  const windowsPathWithDoubleBackslashes = windowsPath.replace(/\//g, '\\\\')
+
+  // Create different format variations
+  const projectDirsInput = [
+    playgroundPath,
+    `${windowsPath}\\`,
+    `\\${windowsPath}`,
+    unixPath,
+    `/${unixPath}`,
+    `${unixPath}/`,
+    windowsPath,
+    windowsPathWithDoubleBackslashes,
+  ];
+
+  // Filter out duplicates (since some formats might be identical depending on OS)
+  const uniqueProjectDirs = [...new Set(projectDirsInput)];
 
   beforeEach(() => {
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -20,12 +40,9 @@ describe('NextJS Router Analysis', () => {
     if (consoleWarnSpy) consoleWarnSpy.mockRestore();
   });
 
-  test('should analyze NextJS routes from playground directory', async () => {
-    // Get absolute path to playground directory
-    const playgroundDir = path.resolve(process.cwd(), 'playground');
-    
+  test.each(uniqueProjectDirs)(`should analyze NextJS routes from %s`, async (projectDir) => {    
     // Call the function we're testing
-    const routesInfo = await getRoutersInfo(playgroundDir);
+    const routesInfo = await getRoutersInfo(projectDir);
     
     // Expect routesInfo to be an array
     expect(Array.isArray(routesInfo)).toBe(true);
