@@ -99,14 +99,20 @@ The tool generates detailed information about each route:
 To run tests:
 
 ```bash
-node run-router-test.js
+npm run test
 ```
 
-To run the mcp server:
+To run the mcp server locally:
 
 ```bash
 npm run build
 node dist/index.js 
+```
+
+To run it from node_modules after `npm i`:
+
+```bash
+node node_modules/next-mcp-server/dist/index.js
 ```
 
 To run the playground:
