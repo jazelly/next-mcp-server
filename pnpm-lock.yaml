@@ -14,6 +14,9 @@ importers:
       express:
         specifier: ^5.0.1
         version: 5.0.1
+      next-mcp-server:
+        specifier: ^0.1.0
+        version: 0.1.0
       zod:
         specifier: ^3.22.4
         version: 3.24.2
@@ -1416,6 +1419,9 @@ packages:
   negotiator@1.0.0:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
     engines: {node: '>= 0.6'}
+
+  next-mcp-server@0.1.0:
+    resolution: {integrity: sha512-MqS1r857vp25PE+mLdSR++v4hprnr7Ev0HabptJGFEx0himiHFfAkwrB0NqaiviKDbZ6PpRSiRlvTMPtAWScVA==}
 
   next@14.2.26:
     resolution: {integrity: sha512-b81XSLihMwCfwiUVRRja3LphLo4uBBMZEzBBWMaISbKTwOmq3wPknIETy/8000tr7Gq4WmbuFYPS7jOYIf+ZJw==}
@@ -3650,6 +3656,15 @@ snapshots:
   natural-compare@1.4.0: {}
 
   negotiator@1.0.0: {}
+
+  next-mcp-server@0.1.0:
+    dependencies:
+      '@modelcontextprotocol/sdk': 1.7.0
+      express: 5.0.1
+      zod: 3.24.2
+      zod-to-json-schema: 3.24.5(zod@3.24.2)
+    transitivePeerDependencies:
+      - supports-color
 
   next@14.2.26(@babel/core@7.26.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
