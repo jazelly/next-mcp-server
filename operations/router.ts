@@ -55,22 +55,12 @@ async function analyzeNextRoutes(projectDir: string): Promise<Array<z.infer<type
 
   for (const filePath of routeFiles) {
     try {
-      const typeFileContent = await readFile(filePath, 'utf8');
-      const implementationPath = extractImplementationPath(typeFileContent);
-      
-      if (!implementationPath) {
-        console.warn(`Could not extract implementation path from ${filePath}`);
-        continue;
-      }
-      
-      // Read the actual implementation file
-      const implFilePath = path.resolve(implementationPath);
       let implementationContent: string | null = null;
       
       try {
-        implementationContent = await readFile(implFilePath, 'utf8');
+        implementationContent = await readFile(filePath, 'utf8');
       } catch (error) {
-        console.warn(`Could not read implementation file ${implFilePath}: ${error.message}`);
+        console.warn(`Could not read implementation file ${filePath}: ${error.message}`);
         continue;
       }
       
@@ -82,7 +72,7 @@ async function analyzeNextRoutes(projectDir: string): Promise<Array<z.infer<type
       
       const routeInfo = RouteInfoSchema.parse({
         filePath,
-        implementationPath: implFilePath,
+        implementationPath: filePath,
         apiPath,
         handlers,
         imports,
@@ -413,7 +403,7 @@ function getStatusCodeDescription(code: number): string {
 export async function getRoutersInfo(projectDir: string) {
   try {
     const routesInfo = await analyzeNextRoutes(projectDir);
-    
+
     console.log('API Routes Analysis:');
     console.log(JSON.stringify(routesInfo, null, 2));
     

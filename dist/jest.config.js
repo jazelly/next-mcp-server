@@ -13,4 +13,7 @@ export default {
             },
         ],
     },
+    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+    verbose: true,
+    silent: false,
 };

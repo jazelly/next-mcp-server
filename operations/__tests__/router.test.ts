@@ -34,23 +34,22 @@ describe('NextJS Router Analysis', () => {
     expect(consoleLogSpy).toHaveBeenCalled();
     
     // Verify structure of returned route info
-    if (routesInfo.length > 0) {
-      const firstRoute = routesInfo[0];
-      
-      // Check that the structure matches our schema
-      expect(firstRoute).toHaveProperty('filePath');
-      expect(firstRoute).toHaveProperty('implementationPath');
-      expect(firstRoute).toHaveProperty('apiPath');
-      expect(firstRoute).toHaveProperty('handlers');
-      expect(Array.isArray(firstRoute.handlers)).toBe(true);
-      
-      // Check handlers if they exist
-      if (firstRoute.handlers.length > 0) {
-        const firstHandler = firstRoute.handlers[0];
-        expect(firstHandler).toHaveProperty('method');
-        expect(firstHandler).toHaveProperty('path');
-        expect(firstHandler).toHaveProperty('functionSignature');
-      }
+    expect(routesInfo.length).toBeGreaterThan(0);
+    const firstRoute = routesInfo[0];
+    
+    // Check that the structure matches our schema
+    expect(firstRoute).toHaveProperty('filePath');
+    expect(firstRoute).toHaveProperty('implementationPath');
+    expect(firstRoute).toHaveProperty('apiPath');
+    expect(firstRoute).toHaveProperty('handlers');
+    expect(Array.isArray(firstRoute.handlers)).toBe(true);
+    
+    // Check handlers if they exist
+    if (firstRoute.handlers.length > 0) {
+      const firstHandler = firstRoute.handlers[0];
+      expect(firstHandler).toHaveProperty('method');
+      expect(firstHandler).toHaveProperty('path');
+      expect(firstHandler).toHaveProperty('functionSignature');
     }
   });
 
